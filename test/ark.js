@@ -12,8 +12,13 @@ contract('ARK', accounts => {
 
         const supply = await instance.totalSupply();
 
-        const decimals = await instance.decimals();
+        const nbDecimals = await instance.decimals();
 
-        assert.equal(1500000000, +supply.toString() / 10 ** decimals);
+        const mainAccountBalance = await instance.balanceOf(accounts[0]);
+
+        const decimals = 10 ** nbDecimals;
+
+        assert.equal(1500000000, +supply.toString() / decimals);
+        assert.equal(1500000000, +mainAccountBalance.toString() / decimals);
     });
 });
