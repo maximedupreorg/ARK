@@ -22,38 +22,59 @@ contract.only('ARK', accounts => {
         assert.equal(1500000000, +mainAccountBalance.toString() / decimals);
     });
 
-    // it('should be able to transfer tokens to a second user and have fee distribution', async () => {
-    //     const instance = await ARK.deployed();
+    it('should be able to transfer tokens to a second user and have 5% fee distribution', async () => {
+        const instance = await ARK.deployed();
 
-    //     const mainAccountBalance = await instance.balanceOf(accounts[0]);
+        const mainAccountBalance = await instance.balanceOf(accounts[0]);
 
-    //     const transferAmount = mainAccountBalance.divn(2);
+        const transferAmount = mainAccountBalance.divn(2);
 
-    //     await instance.transfer(accounts[1], transferAmount);
+        await instance.transfer(accounts[1], transferAmount);
 
-    //     const mainAccountNewBalance = await instance.balanceOf(accounts[0]);
+        const mainAccountNewBalance = await instance.balanceOf(accounts[0]);
 
-    //     const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
+        const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
 
-    //     const feeAmount = transferAmount.divn(20);
-    //     const expectedNewMainAccountBalance = mainAccountBalance
-    //         .sub(transferAmount)
-    //         .add(feeAmount.divn(2));
-    //     const expectedSecondAccountBalance = secondAccountNewBalance
-    //         .sub(transferAmount)
-    //         .sub(feeAmount.divn(2));
+        const fee = transferAmount.divn(20);
+        const mainAccountFeeShare = fee.muln(55).divn(100);
+        const secondAccountFeeShare = fee.muln(45).divn(100);
+        const expectedNewMainAccountBalance = mainAccountBalance
+            .sub(transferAmount)
+            .add(mainAccountFeeShare);
+        const expectedSecondAccountBalance = transferAmount
+            .sub(fee)
+            .add(secondAccountFeeShare);
 
-    //     console.log(expectedNewMainAccountBalance.toString());
-    //     console.log(mainAccountNewBalance.toString());
-    //     console.log(feeAmount.toString());
+        console.log(
+            '\nmainAccountNewBalance\n',
+            mainAccountNewBalance.toString(),
+        );
+        console.log(
+            '\nexpectedNewMainAccountBalance\n',
+            expectedNewMainAccountBalance.toString(),
+        );
+        console.log(
+            '\nsecondAccountNewBalance\n',
+            secondAccountNewBalance.toString(),
+        );
+        console.log(
+            '\nexpectedSecondAccountBalance\n',
+            expectedSecondAccountBalance.toString(),
+        );
+        console.log('\nfee\n', fee.toString());
+        console.log('mainAccountFeeShare\n', mainAccountFeeShare.toString());
+        console.log(
+            'secondAccountFeeShare\n',
+            secondAccountFeeShare.toString(),
+        );
 
-    //     assert.equal(
-    //         expectedNewMainAccountBalance.toString(),
-    //         mainAccountNewBalance.toString(),
-    //     );
-    //     assert.equal(
-    //         expectedSecondAccountBalance.toString(),
-    //         secondAccountNewBalance.toString(),
-    //     );
-    // });
+        assert.equal(
+            expectedNewMainAccountBalance.toString(),
+            mainAccountNewBalance.toString(),
+        );
+        assert.equal(
+            expectedSecondAccountBalance.toString(),
+            secondAccountNewBalance.toString(),
+        );
+    });
 });
