@@ -46,6 +46,10 @@ contract ARK is Context, IERC20, Ownable {
         return _tTotal;
     }
 
+    function isExcluded(address account) public view returns (bool) {
+        return _isExcluded[account];
+    }
+
     ///////////// BALANCEOF LOGIC /////////////
 
     function balanceOf(address account) public view override returns (uint256) {
