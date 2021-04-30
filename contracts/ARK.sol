@@ -21,7 +21,6 @@ contract ARK is Context, IERC20, Ownable {
     mapping(address => uint256) private _tOwned;
     mapping(address => bool) private _isExcluded;
     mapping(address => mapping(address => uint256)) private _allowances;
-
     address[] private _excluded;
 
     constructor() {
