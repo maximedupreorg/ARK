@@ -50,6 +50,15 @@ contract ARK is Context, IERC20, Ownable {
         return _isExcluded[account];
     }
 
+    function allowance(address owner, address spender)
+        public
+        view
+        override
+        returns (uint256)
+    {
+        return _allowances[owner][spender];
+    }
+
     ///////////// BALANCEOF LOGIC /////////////
 
     function balanceOf(address account) public view override returns (uint256) {
