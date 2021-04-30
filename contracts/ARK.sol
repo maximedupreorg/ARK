@@ -20,6 +20,7 @@ contract ARK is Context, IERC20, Ownable {
     mapping(address => uint256) private _rOwned;
     mapping(address => uint256) private _tOwned;
     mapping(address => bool) private _isExcluded;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     address[] private _excluded;
 
@@ -262,6 +263,39 @@ contract ARK is Context, IERC20, Ownable {
     function _reflectFee(uint256 rFee, uint256 tFee) private {
         _rTotal = _rTotal.sub(rFee);
         _tFeeTotal = _tFeeTotal.add(tFee);
+    }
+
+    ///////////// TRANSFER FROM CHAIN /////////////
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public override returns (bool) {
+        _transfer(sender, recipient, amount);
+        _approve(
+            sender,
+            _msgSender(),
+            _allowances[sender][_msgSender()].sub(
+                amount,
+                'ERC20: transfer amount exceeds allowance'
+            )
+        );
+
+        return true;
+    }
+
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount
+    ) private {
+        require(owner != address(0), 'ERC20: approve from the zero address');
+        require(spender != address(0), 'ERC20: approve to the zero address');
+
+        _allowances[owner][spender] = amount;
+
+        emit Approval(owner, spender, amount);
     }
 
     ///////////// SHARED /////////////
