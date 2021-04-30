@@ -4,7 +4,7 @@ function numberWithCommas(x) {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-contract.only('REFLECTCustom', accounts => {
+contract('REFLECTCustom', accounts => {
     it('should print out stuff', async () => {
         const instance = await REFLECTCustom.deployed();
 
