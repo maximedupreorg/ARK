@@ -1,28 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.4;
 
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/utils/Context.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract ARK is ERC20 {
-    mapping(address => uint256) private _accountsLastTotalDividendsMapping;
-    uint256 private _totalDividends;
+contract ARK is Context, IERC20, Ownable {
+    uint256 private constant MAX = ~uint256(0);
+    uint256 private constant _tTotal = 10 * 10**6 * 10**9;
 
-    constructor() ERC20('Arkitects', 'ARK') {
-        _mint(msg.sender, 1500000000 * 10**decimals());
-    }
+    uint256 private _rTotal = (MAX - (MAX % _tTotal));
+    mapping(address => uint256) private _rOwned;
 
-    function balanceOf(address account) public view override returns (uint256) {
-        return super.balanceOf(account);
-    }
+    constructor() {
+        _rOwned[_msgSender()] = _rTotal;
 
-    function transfer(address recipient, uint256 amount)
-        public
-        override
-        returns (bool)
-    {
-        uint256 transferredAmount = (amount * 95) / 100;
-        _totalDividends += (amount * 5) / 100;
-
-        return super.transfer(recipient, transferredAmount);
+        emit Transfer(address(0), _msgSender(), _tTotal);
     }
 }
