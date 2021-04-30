@@ -298,6 +298,38 @@ contract ARK is Context, IERC20, Ownable {
         emit Approval(owner, spender, amount);
     }
 
+    ///////////// INCLUDE ACCOUNT CHAIN /////////////
+
+    function includeAccount(address account) external onlyOwner() {
+        require(_isExcluded[account], 'Account is already excluded');
+
+        for (uint256 i = 0; i < _excluded.length; i++) {
+            if (_excluded[i] == account) {
+                _excluded[i] = _excluded[_excluded.length - 1];
+                _tOwned[account] = 0;
+                _isExcluded[account] = false;
+
+                _excluded.pop();
+
+                break;
+            }
+        }
+    }
+
+    ///////////// EXCLUDE ACCOUNT CHAIN /////////////
+
+    function excludeAccount(address account) external onlyOwner() {
+        require(!_isExcluded[account], 'Account is already excluded');
+
+        if (_rOwned[account] > 0) {
+            _tOwned[account] = tokenFromReflection(_rOwned[account]);
+        }
+
+        _isExcluded[account] = true;
+
+        _excluded.push(account);
+    }
+
     ///////////// SHARED /////////////
 
     function _getRate() private view returns (uint256) {
