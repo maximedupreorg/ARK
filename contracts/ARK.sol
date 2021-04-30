@@ -46,7 +46,7 @@ contract ARK is Context, IERC20, Ownable {
         return _tTotal;
     }
 
-    ///////////// BALANCEOF CHAIN /////////////
+    ///////////// BALANCEOF LOGIC /////////////
 
     function balanceOf(address account) public view override returns (uint256) {
         if (_isExcluded[account]) return _tOwned[account];
@@ -92,7 +92,7 @@ contract ARK is Context, IERC20, Ownable {
         return (rSupply, tSupply);
     }
 
-    ///////////// TRANSFER CHAIN /////////////
+    ///////////// TRANSFER LOGIC /////////////
 
     function transfer(address recipient, uint256 amount)
         public
@@ -265,8 +265,6 @@ contract ARK is Context, IERC20, Ownable {
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
-    ///////////// TRANSFER FROM CHAIN /////////////
-
     function transferFrom(
         address sender,
         address recipient,
@@ -285,6 +283,8 @@ contract ARK is Context, IERC20, Ownable {
         return true;
     }
 
+    ///////////// ALLOWANCE LOGIC /////////////
+
     function _approve(
         address owner,
         address spender,
@@ -298,7 +298,38 @@ contract ARK is Context, IERC20, Ownable {
         emit Approval(owner, spender, amount);
     }
 
-    ///////////// INCLUDE ACCOUNT CHAIN /////////////
+    function increaseAllowance(address spender, uint256 addedValue)
+        public
+        virtual
+        returns (bool)
+    {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].add(addedValue)
+        );
+
+        return true;
+    }
+
+    function decreaseAllowance(address spender, uint256 subtractedValue)
+        public
+        virtual
+        returns (bool)
+    {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].sub(
+                subtractedValue,
+                'ERC20: decreased allowance below zero'
+            )
+        );
+
+        return true;
+    }
+
+    ///////////// INCLUDE EXCLUDD LOGIC /////////////
 
     function includeAccount(address account) external onlyOwner() {
         require(_isExcluded[account], 'Account is already excluded');
@@ -315,8 +346,6 @@ contract ARK is Context, IERC20, Ownable {
             }
         }
     }
-
-    ///////////// EXCLUDE ACCOUNT CHAIN /////////////
 
     function excludeAccount(address account) external onlyOwner() {
         require(!_isExcluded[account], 'Account is already excluded');
