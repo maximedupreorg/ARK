@@ -35,38 +35,15 @@ contract.only('ARK', accounts => {
 
         const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
 
-        const fee = transferAmount.divn(20);
-        const mainAccountFeeShare = fee.muln(55).divn(100);
-        const secondAccountFeeShare = fee.muln(45).divn(100);
+        const fee = transferAmount.muln(5).divn(100);
+        const mainAccountFeeShare = fee.muln(500).divn(975);
+        const secondAccountFeeShare = fee.muln(475).divn(975);
         const expectedNewMainAccountBalance = mainAccountBalance
             .sub(transferAmount)
             .add(mainAccountFeeShare);
         const expectedSecondAccountBalance = transferAmount
             .sub(fee)
             .add(secondAccountFeeShare);
-
-        console.log(
-            '\nmainAccountNewBalance\n',
-            mainAccountNewBalance.toString(),
-        );
-        console.log(
-            '\nexpectedNewMainAccountBalance\n',
-            expectedNewMainAccountBalance.toString(),
-        );
-        console.log(
-            '\nsecondAccountNewBalance\n',
-            secondAccountNewBalance.toString(),
-        );
-        console.log(
-            '\nexpectedSecondAccountBalance\n',
-            expectedSecondAccountBalance.toString(),
-        );
-        console.log('\nfee\n', fee.toString());
-        console.log('mainAccountFeeShare\n', mainAccountFeeShare.toString());
-        console.log(
-            'secondAccountFeeShare\n',
-            secondAccountFeeShare.toString(),
-        );
 
         assert.equal(
             expectedNewMainAccountBalance.toString(),

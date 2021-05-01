@@ -80,8 +80,10 @@ contract ARK is Context, IERC20, Ownable {
             'Amount must be less than total reflections'
         );
 
+        // The number of total reflections per token
         uint256 currentRate = _getRate();
 
+        // Number of tokens per reflection based on the global rate
         return rAmount.div(currentRate);
     }
 
@@ -426,4 +428,6 @@ contract ARK is Context, IERC20, Ownable {
 
         return (rAmount, rTransferAmount, rFee);
     }
+
+    event Debug(string text, uint256 value);
 }
