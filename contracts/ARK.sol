@@ -12,7 +12,7 @@ contract ARK is Context, IERC20, Ownable {
     uint256 private constant MAX = ~uint256(0);
     uint256 private constant _tTotal = 15 * 10**8 * 10**9;
 
-    string private _name = 'The Arkitects';
+    string private _name = 'Ark';
     string private _symbol = 'ARK';
     uint8 private _decimals = 9;
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
