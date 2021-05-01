@@ -2,7 +2,6 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
     networks: {
-        development: {},
         rinkeby: {
             provider: () =>
                 new HDWalletProvider({
