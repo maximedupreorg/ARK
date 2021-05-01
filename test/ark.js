@@ -7,6 +7,22 @@ contract.only('ARK', accounts => {
         return assert.isTrue(true);
     });
 
+    it('should have the ARK symbol', async () => {
+        const instance = await ARK.deployed();
+
+        const symbol = await instance.symbol();
+
+        assert.equal('ARK', symbol);
+    });
+
+    it('should have the Ark name', async () => {
+        const instance = await ARK.deployed();
+
+        const name = await instance.name();
+
+        assert.equal('Ark', name);
+    });
+
     it('should have a 1.5B token supply', async () => {
         const instance = await ARK.deployed();
 
