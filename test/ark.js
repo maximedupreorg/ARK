@@ -38,7 +38,7 @@ contract.only('ARK', accounts => {
         assert.equal(1500000000, +mainAccountBalance.toString() / decimals);
     });
 
-    it('should be able to transfer tokens to a second user and have 5% fee distribution', async () => {
+    it('should be able to transfer tokens to a second user and have 5% fee distribution amongst holders', async () => {
         const instance = await ARK.deployed();
 
         const mainAccountBalance = await instance.balanceOf(accounts[0]);
