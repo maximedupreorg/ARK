@@ -81,4 +81,41 @@ contract('GOLD', accounts => {
             burnAccountBalance.toString(),
         );
     });
+
+    it('should not have a blackhole burn address', async () => {
+        const instance = await GOLD.new();
+
+        const mainAccountBalance = await instance.balanceOf(accounts[0]);
+
+        const transferAmount1 = mainAccountBalance.divn(2);
+
+        await instance.transfer(accounts[1], transferAmount1);
+
+        const burnedAmount1 = transferAmount1
+            .muln(5)
+            .divn(100)
+            .muln(4)
+            .divn(5);
+
+        const transferAmount2 = transferAmount1.divn(2);
+
+        await instance.transfer(accounts[0], transferAmount2, {
+            from: accounts[1],
+        });
+
+        const burnAccountBalance = await instance.balanceOf(
+            '0x0000000000000000000000000000000000000000',
+        );
+
+        const burnedAmount2 = transferAmount2
+            .muln(5)
+            .divn(100)
+            .muln(80)
+            .divn(100);
+
+        assert.equal(
+            burnedAmount1.add(burnedAmount2).toString(),
+            burnAccountBalance.toString(),
+        );
+    });
 });
