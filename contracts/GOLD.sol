@@ -63,6 +63,35 @@ contract GOLD is Base('Gold', 'GOLD', 10 * 10**6 * 10**9) {
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
+    function _transferFromExcluded(
+        address sender,
+        address recipient,
+        uint256 tAmount
+    ) internal override {
+        (
+            uint256 rAmount,
+            uint256 rTransferAmount,
+            uint256 rFee,
+            uint256 tTransferAmount,
+            uint256 tFee
+        ) = _getValues(tAmount);
+        (uint256 rFeeRedistributed, uint256 tFeeRedistributed) =
+            _getFeeRedistributed(rFee, tFee);
+        _tOwned[sender] = _tOwned[sender].sub(tAmount);
+        _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+        _rOwned[address(0)] = _rOwned[address(0)].add(
+            rFee.sub(rFeeRedistributed)
+        );
+        _tOwned[address(0)] = _tOwned[address(0)].add(
+            tFee.sub(tFeeRedistributed)
+        );
+
+        _reflectFee(rFeeRedistributed, tFeeRedistributed);
+
+        emit Transfer(sender, recipient, tTransferAmount);
+    }
+
     function _getFeeRedistributed(uint256 rFee, uint256 tFee)
         private
         pure
