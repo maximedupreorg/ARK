@@ -1,6 +1,6 @@
 const ARK = artifacts.require('ARK');
 
-contract.only('ARK', accounts => {
+contract('ARK', accounts => {
     it('should be able to deploy an instance', async () => {
         await ARK.deployed();
 

@@ -18,8 +18,8 @@ abstract contract Base is Context, IERC20, Ownable {
     string private _symbol;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
-    mapping(address => uint256) private _rOwned;
-    mapping(address => uint256) private _tOwned;
+    mapping(address => uint256) internal _rOwned;
+    mapping(address => uint256) internal _tOwned;
     mapping(address => bool) private _isExcluded;
     mapping(address => mapping(address => uint256)) private _allowances;
     address[] private _excluded;
@@ -34,6 +34,7 @@ abstract contract Base is Context, IERC20, Ownable {
         _tTotal = tTotal_;
         _rTotal = (MAX - (MAX % tTotal_));
         _rOwned[_msgSender()] = _rTotal;
+        _isExcluded[address(0)] = true;
 
         emit Transfer(address(0), _msgSender(), tTotal_);
     }
@@ -134,23 +135,9 @@ abstract contract Base is Context, IERC20, Ownable {
         address sender,
         address recipient,
         uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+    ) internal virtual;
 
-        _reflectFee(rFee, tFee);
-
-        emit Transfer(sender, recipient, tTransferAmount);
-    }
-
-    function _reflectFee(uint256 rFee, uint256 tFee) private {
+    function _reflectFee(uint256 rFee, uint256 tFee) internal {
         _rTotal = _rTotal.sub(rFee);
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
@@ -389,7 +376,7 @@ abstract contract Base is Context, IERC20, Ownable {
     }
 
     function _getValues(uint256 tAmount)
-        private
+        internal
         view
         returns (
             uint256,
