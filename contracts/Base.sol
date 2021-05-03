@@ -149,31 +149,15 @@ abstract contract Base is Context, IERC20, Ownable {
         uint256 tAmount
     ) internal virtual;
 
-    function _reflectFee(uint256 rFee, uint256 tFee) internal {
-        _rTotal = _rTotal.sub(rFee);
-        _tFeeTotal = _tFeeTotal.add(tFee);
-    }
-
     function _transferBothExcluded(
         address sender,
         address recipient,
         uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
-        _tOwned[sender] = _tOwned[sender].sub(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+    ) internal virtual;
 
-        _reflectFee(rFee, tFee);
-
-        emit Transfer(sender, recipient, tTransferAmount);
+    function _reflectFee(uint256 rFee, uint256 tFee) internal {
+        _rTotal = _rTotal.sub(rFee);
+        _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
     function transferFrom(

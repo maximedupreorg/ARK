@@ -67,4 +67,26 @@ contract ARK is Base('Ark', 'ARK', 15 * 10**8 * 10**9) {
 
         emit Transfer(sender, recipient, tTransferAmount);
     }
+
+    function _transferBothExcluded(
+        address sender,
+        address recipient,
+        uint256 tAmount
+    ) internal override {
+        (
+            uint256 rAmount,
+            uint256 rTransferAmount,
+            uint256 rFee,
+            uint256 tTransferAmount,
+            uint256 tFee
+        ) = _getValues(tAmount);
+        _tOwned[sender] = _tOwned[sender].sub(tAmount);
+        _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+
+        _reflectFee(rFee, tFee);
+
+        emit Transfer(sender, recipient, tTransferAmount);
+    }
 }
