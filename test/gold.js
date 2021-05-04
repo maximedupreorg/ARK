@@ -2,13 +2,13 @@ const GOLD = artifacts.require('GOLD');
 
 contract('GOLD', accounts => {
     it('should be able to deploy an instance', async () => {
-        await GOLD.deployed();
+        const instance = await GOLD.new();
 
         return assert.isTrue(true);
     });
 
     it('should have the GOLD symbol', async () => {
-        const instance = await GOLD.deployed();
+        const instance = await GOLD.new();
 
         const symbol = await instance.symbol();
 
@@ -16,7 +16,7 @@ contract('GOLD', accounts => {
     });
 
     it('should have the Gold name', async () => {
-        const instance = await GOLD.deployed();
+        const instance = await GOLD.new();
 
         const name = await instance.name();
 
@@ -24,7 +24,7 @@ contract('GOLD', accounts => {
     });
 
     it('should have a 10M token supply', async () => {
-        const instance = await GOLD.deployed();
+        const instance = await GOLD.new();
 
         const supply = await instance.totalSupply();
 
@@ -39,7 +39,7 @@ contract('GOLD', accounts => {
     });
 
     it('should be able to transfer tokens to a second user and have 5% fee distribution, 1% amongst holder and 4% to the non blackhole burn address', async () => {
-        const instance = await GOLD.deployed();
+        const instance = await GOLD.new();
 
         const mainAccountBalance = await instance.balanceOf(accounts[0]);
 

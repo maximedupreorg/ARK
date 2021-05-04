@@ -8,7 +8,7 @@ contract('ARK', accounts => {
     });
 
     it('should have the ARK symbol', async () => {
-        const instance = await ARK.deployed();
+        const instance = await ARK.new();
 
         const symbol = await instance.symbol();
 
@@ -16,7 +16,7 @@ contract('ARK', accounts => {
     });
 
     it('should have the Ark name', async () => {
-        const instance = await ARK.deployed();
+        const instance = await ARK.new();
 
         const name = await instance.name();
 
@@ -24,7 +24,7 @@ contract('ARK', accounts => {
     });
 
     it('should have a 1.5B token supply', async () => {
-        const instance = await ARK.deployed();
+        const instance = await ARK.new();
 
         const supply = await instance.totalSupply();
 
@@ -39,7 +39,7 @@ contract('ARK', accounts => {
     });
 
     it('should be able to transfer tokens to a second user and have 5% fee distribution amongst holders', async () => {
-        const instance = await ARK.deployed();
+        const instance = await ARK.new();
 
         const mainAccountBalance = await instance.balanceOf(accounts[0]);
 
