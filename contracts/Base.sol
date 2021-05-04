@@ -286,7 +286,7 @@ abstract contract Base is Context, IERC20, Ownable {
         }
     }
 
-    function disableReflection() public {
+    function disableReflection() public onlyOwner() {
         _canReflect = false;
     }
 

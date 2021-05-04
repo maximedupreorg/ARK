@@ -134,4 +134,18 @@ contract('ARK', accounts => {
             secondAccountBalance2.toString(),
         );
     });
+
+    it('should not be able to disable the distribution mechanism if now the owner', async () => {
+        let hasFailed = false;
+
+        const instance = await ARK.new();
+
+        try {
+            await instance.disableReflection({ from: accounts[1] });
+        } catch (e) {
+            hasFailed = true;
+        }
+
+        assert.isTrue(hasFailed);
+    });
 });
