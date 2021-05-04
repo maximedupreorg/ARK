@@ -345,7 +345,7 @@ abstract contract Base is Context, IERC20, Ownable {
         view
         returns (uint256, uint256)
     {
-        uint256 tFee = _canReflect ? tAmount.div(20) : 0;
+        uint256 tFee = _canReflect ? tAmount.mul(3).div(100) : 0;
         uint256 tTransferAmount = tAmount.sub(tFee);
 
         return (tTransferAmount, tFee);

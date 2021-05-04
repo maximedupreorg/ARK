@@ -38,7 +38,7 @@ contract('ARK', accounts => {
         assert.equal(1500000000, +mainAccountBalance.toString() / decimals);
     });
 
-    it('should be able to transfer tokens to a second user and have 5% fee distribution amongst holders', async () => {
+    it('should be able to transfer tokens to a second user and have 3% fee distribution amongst holders', async () => {
         const instance = await ARK.new();
 
         const mainAccountBalance = await instance.balanceOf(accounts[0]);
@@ -51,9 +51,9 @@ contract('ARK', accounts => {
 
         const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
 
-        const fee = transferAmount.muln(5).divn(100);
-        const mainAccountFeeShare = fee.muln(500).divn(975);
-        const secondAccountFeeShare = fee.muln(475).divn(975);
+        const fee = transferAmount.muln(3).divn(100);
+        const mainAccountFeeShare = fee.muln(500).divn(985);
+        const secondAccountFeeShare = fee.muln(485).divn(985);
         const expectedNewMainAccountBalance = mainAccountBalance
             .sub(transferAmount)
             .add(mainAccountFeeShare);
@@ -105,9 +105,9 @@ contract('ARK', accounts => {
 
         await instance.transfer(accounts[1], transferAmount1);
 
-        const fee = transferAmount1.muln(5).divn(100);
-        const mainAccountFeeShare = fee.muln(500).divn(975);
-        const secondAccountFeeShare = fee.muln(475).divn(975);
+        const fee = transferAmount1.muln(3).divn(100);
+        const mainAccountFeeShare = fee.muln(500).divn(985);
+        const secondAccountFeeShare = fee.muln(485).divn(985);
         const expectedNewMainAccountBalance = mainAccountBalance1
             .sub(transferAmount1)
             .add(mainAccountFeeShare);
