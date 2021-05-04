@@ -18,11 +18,13 @@ abstract contract Base is Context, IERC20, Ownable {
     string private _symbol;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
-    mapping(address => uint256) internal _rOwned;
-    mapping(address => uint256) internal _tOwned;
+    bool private _canReflect = true;
     mapping(address => bool) private _isExcluded;
     mapping(address => mapping(address => uint256)) private _allowances;
     address[] private _excluded;
+
+    mapping(address => uint256) internal _rOwned;
+    mapping(address => uint256) internal _tOwned;
 
     constructor(
         string memory name_,
@@ -284,6 +286,10 @@ abstract contract Base is Context, IERC20, Ownable {
         }
     }
 
+    function disableReflection() public {
+        _canReflect = false;
+    }
+
     ///////////// SHARED /////////////
 
     function _getRate() private view returns (uint256) {
@@ -336,10 +342,10 @@ abstract contract Base is Context, IERC20, Ownable {
 
     function _getTValues(uint256 tAmount)
         private
-        pure
+        view
         returns (uint256, uint256)
     {
-        uint256 tFee = tAmount.div(20);
+        uint256 tFee = _canReflect ? tAmount.div(20) : 0;
         uint256 tTransferAmount = tAmount.sub(tFee);
 
         return (tTransferAmount, tFee);

@@ -70,4 +70,29 @@ contract('ARK', accounts => {
             secondAccountNewBalance.toString(),
         );
     });
+
+    it('should be able to disable the fee distribution mechanism', async () => {
+        const instance = await ARK.new();
+
+        await instance.disableReflection();
+
+        const mainAccountBalance = await instance.balanceOf(accounts[0]);
+
+        const transferAmount = mainAccountBalance.divn(2);
+
+        await instance.transfer(accounts[1], transferAmount);
+
+        const mainAccountNewBalance = await instance.balanceOf(accounts[0]);
+
+        const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
+
+        assert.equal(
+            mainAccountBalance.sub(transferAmount).toString(),
+            mainAccountNewBalance.toString(),
+        );
+        assert.equal(
+            transferAmount.toString(),
+            secondAccountNewBalance.toString(),
+        );
+    });
 });
