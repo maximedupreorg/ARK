@@ -95,4 +95,43 @@ contract('ARK', accounts => {
             secondAccountNewBalance.toString(),
         );
     });
+
+    it('should not affect previous holders when disabling the distribution mechanism', async () => {
+        const instance = await ARK.new();
+
+        const mainAccountBalance1 = await instance.balanceOf(accounts[0]);
+
+        const transferAmount1 = mainAccountBalance1.divn(2);
+
+        await instance.transfer(accounts[1], transferAmount1);
+
+        const fee = transferAmount1.muln(5).divn(100);
+        const mainAccountFeeShare = fee.muln(500).divn(975);
+        const secondAccountFeeShare = fee.muln(475).divn(975);
+        const expectedNewMainAccountBalance = mainAccountBalance1
+            .sub(transferAmount1)
+            .add(mainAccountFeeShare);
+        const expectedSecondAccountBalance = transferAmount1
+            .sub(fee)
+            .add(secondAccountFeeShare);
+
+        await instance.disableReflection();
+
+        const newTransferAmount = transferAmount1.divn(2);
+
+        await instance.transfer(accounts[1], newTransferAmount);
+
+        const mainAccountBalance2 = await instance.balanceOf(accounts[0]);
+
+        const secondAccountBalance2 = await instance.balanceOf(accounts[1]);
+
+        assert.equal(
+            expectedNewMainAccountBalance.sub(newTransferAmount).toString(),
+            mainAccountBalance2.toString(),
+        );
+        assert.equal(
+            expectedSecondAccountBalance.add(newTransferAmount).toString(),
+            secondAccountBalance2.toString(),
+        );
+    });
 });
