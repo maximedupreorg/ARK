@@ -1,18 +1,12 @@
 const GOLD = artifacts.require('GOLD');
 
 contract('GOLD', accounts => {
-    it('should be able to deploy an instance', async () => {
-        const instance = await GOLD.new();
-
-        return assert.isTrue(true);
-    });
-
     it('should have the GOLD symbol', async () => {
         const instance = await GOLD.new();
 
         const symbol = await instance.symbol();
 
-        assert.equal('GOLD', symbol);
+        assert.equal(symbol, 'GOLD', 'token symbol');
     });
 
     it('should have the Gold name', async () => {
@@ -20,7 +14,7 @@ contract('GOLD', accounts => {
 
         const name = await instance.name();
 
-        assert.equal('Gold', name);
+        assert.equal(name, 'Gold', 'token name');
     });
 
     it('should have a 10M token supply', async () => {
@@ -34,8 +28,12 @@ contract('GOLD', accounts => {
 
         const decimals = 10 ** nbDecimals;
 
-        assert.equal(10000000, +supply.toString() / decimals);
-        assert.equal(10000000, +mainAccountBalance.toString() / decimals);
+        assert.equal(+supply.toString() / decimals, 10000000, 'token supply');
+        assert.equal(
+            +mainAccountBalance.toString() / decimals,
+            10000000,
+            'main account balance',
+        );
     });
 
     it('should be able to transfer tokens to a second user and have 4% fee distribution, 1% amongst holder and 3% to the non blackhole burn address', async () => {
@@ -117,8 +115,9 @@ contract('GOLD', accounts => {
             .divn(4);
 
         assert.equal(
-            burnedAmount1.add(burnedAmount2).toString(),
             burnAccountBalance.toString(),
+            burnedAmount1.add(burnedAmount2).toString(),
+            'burn account balance',
         );
     });
 });

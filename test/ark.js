@@ -1,18 +1,12 @@
 const ARK = artifacts.require('ARK');
 
 contract('ARK', accounts => {
-    it('should be able to deploy an instance', async () => {
-        await ARK.deployed();
-
-        return assert.isTrue(true);
-    });
-
     it('should have the ARK symbol', async () => {
         const instance = await ARK.new();
 
         const symbol = await instance.symbol();
 
-        assert.equal('ARK', symbol);
+        assert.equal(symbol, 'ARK', 'token symbol');
     });
 
     it('should have the Ark name', async () => {
@@ -20,7 +14,7 @@ contract('ARK', accounts => {
 
         const name = await instance.name();
 
-        assert.equal('Ark', name);
+        assert.equal(name, 'Ark', 'token name');
     });
 
     it('should have a 1.5B token supply', async () => {
@@ -34,8 +28,12 @@ contract('ARK', accounts => {
 
         const decimals = 10 ** nbDecimals;
 
-        assert.equal(1500000000, +supply.toString() / decimals);
-        assert.equal(1500000000, +mainAccountBalance.toString() / decimals);
+        assert.equal(+supply.toString() / decimals, 1500000000, 'total supply');
+        assert.equal(
+            +mainAccountBalance.toString() / decimals,
+            1500000000,
+            'main account balance',
+        );
     });
 
     it('should be able to transfer tokens to a second user and have 3% fee distribution amongst holders', async () => {
@@ -62,12 +60,14 @@ contract('ARK', accounts => {
             .add(secondAccountFeeShare);
 
         assert.equal(
-            expectedNewMainAccountBalance.toString(),
             mainAccountNewBalance.toString(),
+            expectedNewMainAccountBalance.toString(),
+            'main account balance',
         );
         assert.equal(
-            expectedSecondAccountBalance.toString(),
             secondAccountNewBalance.toString(),
+            expectedSecondAccountBalance.toString(),
+            'second account balance',
         );
     });
 
@@ -87,12 +87,14 @@ contract('ARK', accounts => {
         const secondAccountNewBalance = await instance.balanceOf(accounts[1]);
 
         assert.equal(
-            mainAccountBalance.sub(transferAmount).toString(),
             mainAccountNewBalance.toString(),
+            mainAccountBalance.sub(transferAmount).toString(),
+            'main account balance',
         );
         assert.equal(
-            transferAmount.toString(),
             secondAccountNewBalance.toString(),
+            transferAmount.toString(),
+            'second account balance',
         );
     });
 
@@ -126,12 +128,14 @@ contract('ARK', accounts => {
         const secondAccountBalance2 = await instance.balanceOf(accounts[1]);
 
         assert.equal(
-            expectedNewMainAccountBalance.sub(newTransferAmount).toString(),
             mainAccountBalance2.toString(),
+            expectedNewMainAccountBalance.sub(newTransferAmount).toString(),
+            'main account balance',
         );
         assert.equal(
             expectedSecondAccountBalance.add(newTransferAmount).toString(),
             secondAccountBalance2.toString(),
+            'second account balance',
         );
     });
 
@@ -146,6 +150,6 @@ contract('ARK', accounts => {
             hasFailed = true;
         }
 
-        assert.isTrue(hasFailed);
+        assert.isTrue(hasFailed, 'disable reflection failure');
     });
 });
