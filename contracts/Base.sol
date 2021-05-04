@@ -11,6 +11,7 @@ abstract contract Base is Context, IERC20, Ownable {
 
     uint256 private constant MAX = ~uint256(0);
 
+    uint256 internal immutable _txPercentageFee;
     uint256 private immutable _tTotal;
 
     uint8 private _decimals = 9;
@@ -29,14 +30,19 @@ abstract contract Base is Context, IERC20, Ownable {
     constructor(
         string memory name_,
         string memory symbol_,
-        uint256 tTotal_
+        uint256 tTotal_,
+        uint256 txPercentageFee_
     ) {
+        _tTotal = tTotal_;
+        _txPercentageFee = txPercentageFee_;
+
         _name = name_;
         _symbol = symbol_;
-        _tTotal = tTotal_;
         _rTotal = (MAX - (MAX % tTotal_));
         _rOwned[_msgSender()] = _rTotal;
         _isExcluded[address(0)] = true;
+
+        _excluded.push(address(0));
 
         emit Transfer(address(0), _msgSender(), tTotal_);
     }
@@ -345,7 +351,7 @@ abstract contract Base is Context, IERC20, Ownable {
         view
         returns (uint256, uint256)
     {
-        uint256 tFee = _canReflect ? tAmount.mul(3).div(100) : 0;
+        uint256 tFee = _canReflect ? tAmount.mul(_txPercentageFee).div(100) : 0;
         uint256 tTransferAmount = tAmount.sub(tFee);
 
         return (tTransferAmount, tFee);

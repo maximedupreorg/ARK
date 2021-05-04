@@ -38,7 +38,7 @@ contract('GOLD', accounts => {
         assert.equal(10000000, +mainAccountBalance.toString() / decimals);
     });
 
-    it('should be able to transfer tokens to a second user and have 5% fee distribution, 1% amongst holder and 4% to the non blackhole burn address', async () => {
+    it('should be able to transfer tokens to a second user and have 4% fee distribution, 1% amongst holder and 3% to the non blackhole burn address', async () => {
         const instance = await GOLD.new();
 
         const mainAccountBalance = await instance.balanceOf(accounts[0]);
@@ -55,10 +55,10 @@ contract('GOLD', accounts => {
             '0x0000000000000000000000000000000000000000',
         );
 
-        const fee = transferAmount.muln(5).divn(100);
-        const holdersFee = fee.divn(5);
-        const mainAccountFeeShare = holdersFee.muln(500).divn(995);
-        const secondAccountFeeShare = holdersFee.muln(475).divn(995);
+        const fee = transferAmount.muln(4).divn(100);
+        const holdersFee = fee.divn(4);
+        const mainAccountFeeShare = holdersFee.muln(500).divn(980);
+        const secondAccountFeeShare = holdersFee.muln(480).divn(980);
         const burnAccountFeeShare = fee.sub(holdersFee);
         const expectedNewMainAccountBalance = mainAccountBalance
             .sub(transferAmount)
@@ -69,16 +69,19 @@ contract('GOLD', accounts => {
         const expectedBurnAccountBalance = burnAccountFeeShare;
 
         assert.equal(
-            expectedNewMainAccountBalance.toString(),
             mainAccountNewBalance.toString(),
+            expectedNewMainAccountBalance.toString(),
+            'main account balance',
         );
         assert.equal(
-            expectedSecondAccountBalance.toString(),
             secondAccountNewBalance.toString(),
+            expectedSecondAccountBalance.toString(),
+            'second account balance',
         );
         assert.equal(
-            expectedBurnAccountBalance.toString(),
             burnAccountBalance.toString(),
+            expectedBurnAccountBalance.toString(),
+            'burn account balance',
         );
     });
 
@@ -92,10 +95,10 @@ contract('GOLD', accounts => {
         await instance.transfer(accounts[1], transferAmount1);
 
         const burnedAmount1 = transferAmount1
-            .muln(5)
-            .divn(100)
             .muln(4)
-            .divn(5);
+            .divn(100)
+            .muln(3)
+            .divn(4);
 
         const transferAmount2 = transferAmount1.divn(2);
 
@@ -108,10 +111,10 @@ contract('GOLD', accounts => {
         );
 
         const burnedAmount2 = transferAmount2
-            .muln(5)
+            .muln(4)
             .divn(100)
-            .muln(80)
-            .divn(100);
+            .muln(3)
+            .divn(4);
 
         assert.equal(
             burnedAmount1.add(burnedAmount2).toString(),

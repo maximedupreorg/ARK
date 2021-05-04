@@ -3,7 +3,7 @@ pragma solidity 0.8.4;
 
 import './Base.sol';
 
-contract ARK is Base('Ark', 'ARK', 15 * 10**8 * 10**9) {
+contract ARK is Base('Ark', 'ARK', 15 * 10**8 * 10**9, 3) {
     using SafeMath for uint256;
 
     function _transferStandard(
